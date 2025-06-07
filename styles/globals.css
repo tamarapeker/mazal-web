@@ -1,0 +1,22 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Colores de marca */
+:root {
+  --brand-dark: #144220;
+  --brand-medium: #1E6F3C;
+  --gray-light: #F5F5F5;
+  --gray-medium: #666666;
+}
+
+/* Body */
+body {
+  @apply bg-white text-gray-800 antialiased;
+  font-family: 'Roboto', sans-serif;
+}
+
+/* Headings */
+h1, h2, h3, h4 {
+  font-family: 'Montserrat', sans-serif;
+}
