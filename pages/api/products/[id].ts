@@ -12,9 +12,15 @@ export default async function handler(
     const prod = await prisma.product.findUnique({
       where: { id },
       include: {
-        formats: true,
+        formats: {
+          include: {
+            details: true,
+          },
+        },
         images: true,
-        category: { include: { parent: true } },
+        category: {
+          include: { parent: true },
+        },
       },
     });
     return res.json(prod);

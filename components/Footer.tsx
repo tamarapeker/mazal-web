@@ -33,10 +33,10 @@ export default function Footer() {
             </li>
             <li>
               <Link
-                href="/categories/gancho"
+                href="/categories/herrajes"
                 className="hover:text-brand-light"
               >
-                Ganchos
+                Herrajes
               </Link>
             </li>
             {/* etc. */}

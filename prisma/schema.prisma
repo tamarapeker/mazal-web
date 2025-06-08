@@ -39,10 +39,25 @@ model ProductFormat {
   id               Int       @id @default(autoincrement())
   product          Product   @relation(fields: [productId], references: [id])
   productId        Int
-  packagingType    String
-  packagingSize    Float?
-  packagingUnit    String?
-  measurements     String[]
+  saleUnit      String   // p.ej. 'unidades', 'metros', 'bolsa'
+  minQuantity   Float?     // p.ej. 12, 24
+  minUnit       String?  // p.ej. 'unidades', 'm'
+  unitsPerBulk Int?     // si existiera, p.ej. 720
+
+details       FormatDetail[]  // cada par label/value
+
+ @@index([productId])
+}
+
+model FormatDetail {
+  id        Int             @id @default(autoincrement())
+  format    ProductFormat   @relation(fields: [formatId], references: [id])
+  formatId  Int
+  measurement   String          // p.ej. 'N° 30 – 3 mm', 'Simple', '3"'
+  code          String          // p.ej. 'CADZ030', 'CADBAD', 'PREG3'
+  unitsPerBulk  Int?
+
+  @@index([formatId])
 }
 
 model ProductImage {

@@ -12,8 +12,6 @@ export default function CategoryCard({
     ? `/categories/${parentSlug}/${category.slug}`
     : `/categories/${category.slug}`;
 
-  console.log("CategoryCard href:", href);
-
   return (
     <Link
       href={href}

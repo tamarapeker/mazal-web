@@ -8,13 +8,22 @@ export interface Category {
   parent?: Category;
 }
 
+export interface FormatDetails {
+  id: number;
+  formatId: number;
+  measurement: string;
+  code: string;
+  unitsPerBulk?: number;
+}
+
 export interface ProductFormat {
   id: number;
   productId: number;
-  packagingType: string;
-  packagingSize?: number;
-  packagingUnit?: string;
-  measurements: string[];
+  saleUnit: string;
+  minQuantity?: number;
+  minUnit?: string;
+  unitsPerBulk?: number; // valor por defecto si ningún detail lo sobreescribe
+  details: FormatDetails[];
 }
 
 export interface ProductImage {

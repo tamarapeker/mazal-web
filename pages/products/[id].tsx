@@ -2,9 +2,15 @@ import { GetStaticPaths, GetStaticProps } from "next";
 import api from "@/lib/api";
 import Layout from "@/components/Layout";
 import Breadcrumbs from "@/components/Breadcrumbs";
-import { Category, Product } from "@/types";
+import { Category, Product, ProductFormat, ProductImage } from "@/types";
 
-type Props = { product: Product & { formats: any[]; images: any[] } };
+type Props = {
+  product: Product & {
+    formats: ProductFormat[];
+    images: ProductImage[];
+    category: Category & { parent?: Category };
+  };
+};
 
 export const getStaticPaths: GetStaticPaths = async () => {
   const { data: products } = await api.get<Product[]>("/api/products");
@@ -15,39 +21,32 @@ export const getStaticPaths: GetStaticPaths = async () => {
 };
 
 export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
-  const { data: product } = await api.get<
-    Product & {
-      formats: any[];
-      images: any[];
-      category: Category & { parent?: Category };
-    }
-  >(`/api/products/${params!.id}`);
+  const { data: product } = await api.get<Props["product"]>(
+    `/api/products/${params!.id}`
+  );
   return { props: { product } };
 };
 
 export default function ProductDetail({ product }: Props) {
+  const parent = product.category.parent;
+  const crumbs = [
+    { label: "Inicio", href: "/" },
+    { label: "Categorías", href: "/categories" },
+    parent ? { label: parent.name, href: `/categories/${parent.slug}` } : null,
+    {
+      label: product.category.name,
+      href: parent
+        ? `/categories/${parent.slug}/${product.category.slug}`
+        : `/categories/${product.category.slug}`,
+    },
+    { label: product.name, href: "" },
+  ].filter(Boolean);
+
   return (
     <Layout>
-      <Breadcrumbs
-        items={[
-          { label: "Inicio", href: "/" },
-          { label: "Categorías", href: "/categories" },
-          {
-            label: product.category?.parent ? product.category.parent.name : "",
-            href: product.category?.parent
-              ? `/categories/${product.category.parent.slug}`
-              : "",
-          },
-          {
-            label: product.category ? product.category.name : "",
-            href: product.category
-              ? `/categories/${product.category.slug}`
-              : "",
-          },
-          { label: product.name, href: "" },
-        ]}
-      />
+      <Breadcrumbs items={crumbs as any} />
       <div className="md:flex md:space-x-8">
+        {/* Galería… */}
         <div className="md:w-1/2">
           <img
             src={
@@ -63,42 +62,95 @@ export default function ProductDetail({ product }: Props) {
                 <img
                   key={i}
                   src={img.url}
+                  alt={product.name}
                   className="w-16 h-16 object-cover rounded"
                 />
               ))}
             </div>
           )}
         </div>
+
+        {/* Detalle y tabla de presentaciones */}
         <div className="md:w-1/2 mt-6 md:mt-0">
           <h1 className="text-3xl font-semibold mb-4">{product.name}</h1>
           <p className="mb-4">{product.description}</p>
+
           <div className="mb-8">
-            <h2 className="font-medium text-xl mb-4">Presentaciones</h2>
-            <div className="overflow-x-auto">
-              <table className="min-w-full border-collapse">
-                <thead>
-                  <tr className="bg-gray-100">
-                    <th className="border px-4 py-2 text-left">Empaque</th>
-                    <th className="border px-4 py-2 text-left">Cantidad</th>
-                    <th className="border px-4 py-2 text-left">Medidas</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {product.formats.map((f) => (
-                    <tr key={f.id} className="odd:bg-white even:bg-gray-50">
-                      <td className="border px-4 py-2">{f.packagingType}</td>
-                      <td className="border px-4 py-2">
-                        {f.packagingSize}
-                        {f.packagingUnit}
-                      </td>
-                      <td className="border px-4 py-2">
-                        {f.measurements.join(", ")}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+            {product.formats.map((f) => {
+              // ¿Alguna medida tiene unitsPerBulk distinto de null?
+              const hasOverrideUPB = f.details.some(
+                (d) => d.unitsPerBulk != null
+              );
+              // valor por defecto si no hay override
+              const defaultUPB = f.unitsPerBulk;
+
+              return (
+                <div key={f.id} className="mb-12">
+                  {/* Datos genéricos del formato */}
+                  <div className="mb-4 space-y-1">
+                    <p>
+                      <span className="font-semibold">Empaque:</span>{" "}
+                      {f.saleUnit}
+                    </p>
+                    <p>
+                      <span className="font-semibold">Cantidad mínima:</span>{" "}
+                      {f.minQuantity}
+                      {f.minUnit}
+                    </p>
+                    {/** Si NO hay override en detalles y existe defaultUPB, muéstralo aquí */}
+                    {!hasOverrideUPB && defaultUPB != null && (
+                      <p>
+                        <span className="font-semibold">
+                          Unidades por bulto:
+                        </span>{" "}
+                        {defaultUPB}
+                        {f.minUnit}
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Tabla de medidas / códigos (y columna UPB solo si hay override) */}
+                  <div className="overflow-x-auto">
+                    <table className="min-w-full border-collapse">
+                      <thead>
+                        <tr className="bg-gray-100">
+                          <th className="border px-4 py-2 text-left">Medida</th>
+                          <th className="border px-4 py-2 text-left">Código</th>
+                          {hasOverrideUPB && (
+                            <th className="border px-4 py-2 text-left">
+                              Unidades por bulto
+                            </th>
+                          )}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {f.details.map((d) => {
+                          // si la medida no tiene override, cae al defaultUPB
+                          const upb = d.unitsPerBulk ?? defaultUPB;
+                          return (
+                            <tr
+                              key={`${f.id}-${d.id}`}
+                              className="odd:bg-white even:bg-gray-50"
+                            >
+                              <td className="border px-4 py-2">
+                                {d.measurement}
+                              </td>
+                              <td className="border px-4 py-2">{d.code}</td>
+                              {hasOverrideUPB && (
+                                <td className="border px-4 py-2">
+                                  {upb}
+                                  {f.minUnit}
+                                </td>
+                              )}
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
       </div>

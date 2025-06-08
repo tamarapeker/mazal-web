@@ -3,6 +3,8 @@ import Layout from "@/components/Layout";
 import ProductCard from "@/components/ProductCard";
 import api from "@/lib/api";
 import { Product } from "@/types";
+import Link from "next/link";
+import Carousel from "@/components/Carousel";
 
 export const getStaticProps: GetStaticProps = async () => {
   // Para arrancar, traemos los 4 primeros
@@ -13,10 +15,7 @@ export const getStaticProps: GetStaticProps = async () => {
 export default function Home({ products }: { products: Product[] }) {
   return (
     <Layout>
-      {/* Carrusel */}
-      <div className="relative w-full h-64 overflow-hidden rounded-lg shadow-md">
-        <img src="/images/slide1.png" className="object-cover w-full h-full" />
-      </div>
+      <Carousel />
 
       {/* Productos destacados */}
       <section className="mt-12">
@@ -26,6 +25,21 @@ export default function Home({ products }: { products: Product[] }) {
             <ProductCard key={p.id} product={p} />
           ))}
         </div>
+      </section>
+
+      {/* → Call to action para explorar categorías ← */}
+      <section className="mt-12 bg-brand-medium text-white rounded-lg p-8 text-center">
+        <h2 className="text-2xl font-bold mb-4">¿Buscas algo en particular?</h2>
+        <p className="mb-6">
+          Descubre nuestras categorías de productos y encuentra lo que
+          necesitas.
+        </p>
+        <Link
+          href="/categories"
+          className="inline-block bg-white text-brand-medium font-semibold px-6 py-3 rounded-lg shadow hover:bg-gray-100 transition"
+        >
+          Ver todas las categorías
+        </Link>
       </section>
     </Layout>
   );
