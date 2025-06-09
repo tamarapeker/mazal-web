@@ -1,30 +1,46 @@
 import { GetStaticPaths, GetStaticProps } from "next";
 import api from "@/lib/api";
 import Layout from "@/components/Layout";
-import CategoryCard from "@/components/CategoryCard";
+import ProductCard from "@/components/ProductCard";
 import Breadcrumbs from "@/components/Breadcrumbs";
-import { Category } from "@/types";
+import { Category, Product } from "@/types"; // crea un archivo types.ts si quieres
 
 type Props = {
-  category: Category & { children: Category[] };
+  category: Category;
+  products: Product[];
 };
 
 export const getStaticPaths: GetStaticPaths = async () => {
+  // 1) fetch all root categories
   const { data: cats } = await api.get<Category[]>("/api/categories");
-  return {
-    paths: cats.map((c) => ({ params: { categorySlug: c.slug } })),
-    fallback: false,
-  };
+  // 2) for each, fetch its children/subcategories
+  const paths: { params: { categorySlug: string } }[] = [];
+  for (const cat of cats) {
+    const { data: fullCat } = await api.get<
+      Category & { children: Category[] }
+    >(`/api/categories/${cat.slug}`);
+    fullCat.children.forEach((sub) => {
+      paths.push({ params: { categorySlug: cat.slug } });
+    });
+  }
+  return { paths, fallback: false };
 };
 
 export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
-  const { data: category } = await api.get<Category & { children: Category[] }>(
-    `/api/categories/${params!.categorySlug}`
+  const { categorySlug, subSlug } = params as any;
+  const { data: cat } = await api.get<Category & { children: Category[] }>(
+    `/api/categories/${categorySlug}`
   );
-  return { props: { category } };
+
+  // ahora fetch products de la sub
+  const { data: products } = await api.get<Product[]>(
+    `/api/products?categoryId=${cat.id}`
+  );
+
+  return { props: { category: cat, products } };
 };
 
-export default function Subcategories({ category }: Props) {
+export default function ProductsSub({ category, products }: Props) {
   return (
     <Layout>
       <Breadcrumbs
@@ -34,14 +50,10 @@ export default function Subcategories({ category }: Props) {
           { label: category.name, href: "" },
         ]}
       />
-      <h1 className="text-3xl font-semibold mb-8">{category.name}</h1>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {category.children.map((sub) => (
-          <CategoryCard
-            key={sub.id}
-            category={sub}
-            parentSlug={category.slug}
-          />
+      <h1 className="text-3xl font-semibold mb-6">{category.name}</h1>
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
+        {products.map((p) => (
+          <ProductCard key={p.id} product={p} />
         ))}
       </div>
     </Layout>

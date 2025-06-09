@@ -8,7 +8,7 @@ type Props = {
   product: Product & {
     formats: ProductFormat[];
     images: ProductImage[];
-    category: Category & { parent?: Category };
+    category: Category;
   };
 };
 
@@ -28,17 +28,11 @@ export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
 };
 
 export default function ProductDetail({ product }: Props) {
-  const parent = product.category.parent;
+  const category = product.category;
   const crumbs = [
     { label: "Inicio", href: "/" },
     { label: "Categorías", href: "/categories" },
-    parent ? { label: parent.name, href: `/categories/${parent.slug}` } : null,
-    {
-      label: product.category.name,
-      href: parent
-        ? `/categories/${parent.slug}/${product.category.slug}`
-        : `/categories/${product.category.slug}`,
-    },
+    { label: category.name, href: `/categories/${category.slug}` },
     { label: product.name, href: "" },
   ].filter(Boolean);
 

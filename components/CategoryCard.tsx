@@ -14,7 +14,7 @@ export default function CategoryCard({
 
   return (
     <Link
-      href={href}
+      href={`/categories/${category.slug}`}
       className="block bg-white shadow hover:shadow-lg rounded-lg overflow-hidden"
     >
       {category.imageUrl ? (

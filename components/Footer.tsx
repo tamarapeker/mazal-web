@@ -1,10 +1,16 @@
 import Link from "next/link";
-import { FaWhatsapp, FaEnvelope, FaMapMarkerAlt } from "react-icons/fa";
+import {
+  FaWhatsapp,
+  FaEnvelope,
+  FaMapMarkerAlt,
+  FaInstagram,
+  FaYoutube,
+} from "react-icons/fa";
 
 export default function Footer() {
   return (
     <footer className="bg-brand-dark text-white mt-12">
-      <div className="container mx-auto px-4 py-10 grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div className="container mx-auto px-4 py-10 grid grid-cols-1 md:grid-cols-4 gap-8">
         <div>
           <h3 className="font-semibold mb-2">Empresa</h3>
           <ul>
@@ -77,6 +83,29 @@ export default function Footer() {
               </a>
             </li>
           </ul>
+        </div>
+        <div>
+          <h3 className="font-semibold mb-2">Síguenos</h3>
+          <div className="flex flex-col space-y-4">
+            <a
+              href="https://instagram.com/mazal_importaciones_srl"
+              target="_blank"
+              rel="noopener"
+              className="flex items-center space-x-2 hover:text-brand-medium"
+            >
+              <FaInstagram size={24} />
+              <span className="font-medium">@mazal_importaciones_srl</span>
+            </a>
+            <a
+              href="https://youtube.com/@ArielPeker"
+              target="_blank"
+              rel="noopener"
+              className="flex items-center space-x-2 hover:text-brand-medium"
+            >
+              <FaYoutube size={24} />
+              <span className="font-medium">@ArielPeker</span>
+            </a>
+          </div>
         </div>
       </div>
       <div className="bg-brand-medium text-center py-4">
