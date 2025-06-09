@@ -7,13 +7,6 @@ import {
   FaYoutube,
 } from "react-icons/fa";
 
-const images = [
-  "/images/slide1.png",
-  "/images/slide2.png",
-  "/images/slide3.png",
-  "/images/slide4.png",
-];
-
 export default function Carousel() {
   const [current, setCurrent] = useState(0);
 

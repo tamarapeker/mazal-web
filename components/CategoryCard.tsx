@@ -8,10 +8,6 @@ export default function CategoryCard({
   category: Category;
   parentSlug?: string;
 }) {
-  const href = parentSlug
-    ? `/categories/${parentSlug}/${category.slug}`
-    : `/categories/${category.slug}`;
-
   return (
     <Link
       href={`/categories/${category.slug}`}

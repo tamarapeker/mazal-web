@@ -1,7 +1,7 @@
 import { GetStaticPaths, GetStaticProps } from "next";
 import api from "@/lib/api";
 import Layout from "@/components/Layout";
-import Breadcrumbs from "@/components/Breadcrumbs";
+import Breadcrumbs, { Crumb } from "@/components/Breadcrumbs";
 import { Category, Product, ProductFormat, ProductImage } from "@/types";
 
 type Props = {
@@ -38,7 +38,7 @@ export default function ProductDetail({ product }: Props) {
 
   return (
     <Layout>
-      <Breadcrumbs items={crumbs as any} />
+      <Breadcrumbs items={crumbs as Crumb[]} />
       <div className="md:flex md:space-x-8">
         {/* Galería… */}
         <div className="md:w-1/2">
