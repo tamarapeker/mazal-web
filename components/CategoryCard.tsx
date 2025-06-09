@@ -1,13 +1,7 @@
 import { Category } from "@/types";
 import Link from "next/link";
 
-export default function CategoryCard({
-  category,
-  parentSlug,
-}: {
-  category: Category;
-  parentSlug?: string;
-}) {
+export default function CategoryCard({ category }: { category: Category }) {
   return (
     <Link
       href={`/categories/${category.slug}`}
