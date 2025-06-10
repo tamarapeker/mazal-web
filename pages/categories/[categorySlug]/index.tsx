@@ -97,17 +97,17 @@ export default function ProductsSub() {
     // 1) Traer la categoría
     api
       .get<Category & { children: Category[] }>(`/api/categories/${slug}`)
-      .then((r) => setCategory(r.data))
-      .catch(() => {
-        /* manejar error */
-      });
+      .then((r) => {
+        const cat = r.data;
+        setCategory(cat);
 
-    // 2) Traer productos
-    api
-      .get<Product[]>(`/api/products?categoryId=${query.categoryId}`)
-      .then((r) => setProducts(r.data))
-      .catch(() => {
-        /* manejar error */
+        // 2) Traer productos **usando cat.id**
+        return api.get<Product[]>(`/api/products?categoryId=${cat.id}`);
+      })
+      .then((r2) => setProducts(r2.data))
+      .catch((err) => {
+        console.error(err);
+        // manejar error
       });
   }, [isReady, slug]);
 
