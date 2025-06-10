@@ -8,7 +8,7 @@
     "lint": "next lint",
     "seed:product-details": "ts-node prisma/seedProductFormatAndDetails.ts",
     "prisma:migrate": "prisma migrate deploy",
-    "build": "npm run prisma:migrate && next build"
+    "build": "prisma generate && npm run prisma:migrate && next build"
   },
   "dependencies": {
     "@adminjs/express": "^6.1.1",
