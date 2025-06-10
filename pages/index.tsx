@@ -1,18 +1,29 @@
-import { GetStaticProps } from "next";
 import Layout from "@/components/Layout";
 import ProductCard from "@/components/ProductCard";
 import api from "@/lib/api";
 import { Product } from "@/types";
 import Link from "next/link";
 import Carousel from "@/components/Carousel";
+import { useEffect, useState } from "react";
 
-export const getStaticProps: GetStaticProps = async () => {
-  // Para arrancar, traemos los 4 primeros
-  const { data: products } = await api.get<Product[]>("/api/products?take=4");
-  return { props: { products } };
-};
+// export const getStaticProps: GetStaticProps = async () => {
+//   // Para arrancar, traemos los 4 primeros
+//   const { data: products } = await api.get<Product[]>("/api/products?take=4");
+//   return { props: { products } };
+// };
 
-export default function Home({ products }: { products: Product[] }) {
+export default function Home() {
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    api
+      .get<Product[]>("/api/products?take=4")
+      .then((r) => setProducts(r.data))
+      .catch((err) => console.error(err))
+      .finally(() => setLoading(false));
+  }, []);
+
   return (
     <Layout>
       <Carousel />
@@ -20,11 +31,15 @@ export default function Home({ products }: { products: Product[] }) {
       {/* Productos destacados */}
       <section className="mt-12">
         <h2 className="text-2xl font-semibold mb-6">Productos Destacados</h2>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-          {products.map((p) => (
-            <ProductCard key={p.id} product={p} />
-          ))}
-        </div>
+        {loading ? (
+          <p className="text-center text-gray-500">Cargando productos…</p>
+        ) : (
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            {products.map((p) => (
+              <ProductCard key={p.id} product={p} />
+            ))}
+          </div>
+        )}
       </section>
 
       {/* → Call to action para explorar categorías ← */}

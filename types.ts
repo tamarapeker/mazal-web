@@ -2,10 +2,10 @@ export interface Category {
   id: number;
   name: string;
   slug: string;
-  imageUrl?: string;
-  parentId?: number;
-  children?: Category[];
-  parent?: Category;
+  imageUrl?: string | null;
+  parentId?: number | null;
+  children?: Category[] | null;
+  parent?: Category | null;
 }
 
 export interface FormatDetails {
@@ -13,16 +13,16 @@ export interface FormatDetails {
   formatId: number;
   measurement: string;
   code: string;
-  unitsPerBulk?: number;
+  unitsPerBulk?: number | null;
 }
 
 export interface ProductFormat {
   id: number;
   productId: number;
   saleUnit: string;
-  minQuantity?: number;
-  minUnit?: string;
-  unitsPerBulk?: number; // valor por defecto si ningún detail lo sobreescribe
+  minQuantity?: number | null;
+  minUnit?: string | null;
+  unitsPerBulk?: number | null; // valor por defecto si ningún detail lo sobreescribe
   details: FormatDetails[];
 }
 
@@ -30,7 +30,7 @@ export interface ProductImage {
   id: number;
   productId: number;
   url: string;
-  altText?: string;
+  altText?: string | null;
   order: number;
 }
 
@@ -38,7 +38,7 @@ export interface Product {
   id: number;
   code: string;
   name: string;
-  description?: string;
+  description?: string | null;
   categoryId: number;
   category?: Category;
   formats?: ProductFormat[];

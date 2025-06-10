@@ -1,33 +1,126 @@
-import { GetStaticPaths, GetStaticProps } from "next";
-import api from "@/lib/api";
 import Layout from "@/components/Layout";
 import Breadcrumbs, { Crumb } from "@/components/Breadcrumbs";
-import { Category, Product, ProductFormat, ProductImage } from "@/types";
+import {
+  Category,
+  FormatDetails,
+  Product,
+  ProductFormat,
+  ProductImage,
+} from "@/types";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
+import api from "@/lib/api";
 
-type Props = {
-  product: Product & {
-    formats: ProductFormat[];
-    images: ProductImage[];
-    category: Category;
-  };
-};
+// type Props = {
+//   product: Product & {
+//     formats: ProductFormat[];
+//     images: ProductImage[];
+//     category: Category;
+//   };
+// };
 
-export const getStaticPaths: GetStaticPaths = async () => {
-  const { data: products } = await api.get<Product[]>("/api/products");
-  return {
-    paths: products.map((p) => ({ params: { id: p.id.toString() } })),
-    fallback: false,
-  };
-};
+// interface ProductParams extends ParsedUrlQuery {
+//   id: string;
+// }
 
-export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
-  const { data: product } = await api.get<Props["product"]>(
-    `/api/products/${params!.id}`
-  );
-  return { props: { product } };
-};
+// export const getStaticPaths: GetStaticPaths = async () => {
+//   const { data: products } = await api.get<Product[]>("/api/products");
+//   return {
+//     paths: products.map((p) => ({ params: { id: p.id.toString() } })),
+//     fallback: false,
+//   };
+// };
 
-export default function ProductDetail({ product }: Props) {
+// export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
+//   if (!params?.id) return { notFound: true };
+
+//   const { data: product } = await api.get<Props["product"]>(
+//     `/api/products/${params!.id}`
+//   );
+//   return { props: { product } };
+// };
+
+// export const getStaticPaths: GetStaticPaths<ProductParams> = async () => {
+//   const list = await prisma.product.findMany({ select: { id: true } });
+//   return {
+//     paths: list.map((p) => ({ params: { id: String(p.id) } })),
+//     fallback: false,
+//   };
+// };
+
+// export const getStaticProps: GetStaticProps<Props, ProductParams> = async ({
+//   params,
+// }) => {
+//   if (!params?.id) return { notFound: true };
+//   const id = Number(params.id);
+
+//   const prod = await prisma.product.findUnique({
+//     where: { id },
+//     include: {
+//       category: true,
+//       formats: { include: { details: true } },
+//       images: true,
+//     },
+//   });
+//   if (!prod) return { notFound: true };
+
+//   return {
+//     props: {
+//       product: {
+//         id: prod.id,
+//         code: prod.code,
+//         name: prod.name,
+//         description: prod.description ?? "",
+//         categoryId: prod.categoryId, // ← aquí lo adds
+//         category: prod.category,
+//         formats: prod.formats,
+//         images: prod.images,
+//       },
+//     },
+//   };
+// };
+
+export default function ProductDetail() {
+  const { query, isReady } = useRouter();
+  const id = Array.isArray(query.id) ? query.id[0] : query.id;
+
+  const [product, setProduct] = useState<
+    | (Product & {
+        formats: (Omit<ProductFormat, "details"> & {
+          details: FormatDetails[];
+        })[];
+        images: ProductImage[];
+        category: Category;
+      })
+    | null
+  >(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!isReady || !id) return;
+    setLoading(true);
+    api
+      .get(`/api/products/${id}`)
+      .then((r) => setProduct(r.data))
+      .catch(console.error)
+      .finally(() => setLoading(false));
+  }, [isReady, id]);
+
+  if (loading) {
+    return (
+      <Layout>
+        <p className="text-center py-20">Cargando producto…</p>
+      </Layout>
+    );
+  }
+  if (!product) {
+    return (
+      <Layout>
+        <p className="text-center py-20">Producto no encontrado.</p>
+      </Layout>
+    );
+  }
+
   const category = product.category;
   const crumbs = [
     { label: "Inicio", href: "/" },

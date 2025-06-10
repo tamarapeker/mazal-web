@@ -19,6 +19,9 @@ export default async function handler(
 
         const formats = await prisma.productFormat.findMany({
           where,
+          include: {
+            details: true,
+          },
         });
         return res.status(200).json(formats);
       }
@@ -27,34 +30,57 @@ export default async function handler(
         // Crea un nuevo ProductFormat
         const {
           productId,
-          packagingType,
-          packagingSize,
-          packagingUnit,
-          measurements,
+          saleUnit,
+          minQuantity,
+          minUnit,
+          unitsPerBulk,
+          details,
         } = req.body as {
           productId: number;
-          packagingType: string;
-          packagingSize?: number;
-          packagingUnit?: string;
-          measurements: string[];
+          saleUnit: string;
+          minQuantity?: number;
+          minUnit?: string;
+          unitsPerBulk?: number;
+          details: {
+            measurement: string;
+            code: string;
+            unitsPerBulk?: number;
+          }[];
         };
 
         // Validaciones mínimas
-        if (!productId || !packagingType || !Array.isArray(measurements)) {
-          return res
-            .status(400)
-            .json({
-              error: "productId, packagingType y measurements son obligatorios",
-            });
+        if (
+          !productId ||
+          !saleUnit ||
+          !Array.isArray(details) ||
+          details.some(
+            (d) =>
+              typeof d.measurement !== "string" || typeof d.code !== "string"
+          )
+        ) {
+          return res.status(400).json({
+            error:
+              "productId, saleUnit y details (array de {measurement,code}) son obligatorios",
+          });
         }
 
         const newFormat = await prisma.productFormat.create({
           data: {
             product: { connect: { id: productId } },
-            packagingType,
-            packagingSize,
-            packagingUnit,
-            measurements,
+            saleUnit,
+            minQuantity,
+            minUnit,
+            unitsPerBulk,
+            details: {
+              create: details.map((d) => ({
+                measurement: d.measurement,
+                code: d.code,
+                unitsPerBulk: d.unitsPerBulk,
+              })),
+            },
+          },
+          include: {
+            details: true,
           },
         });
         return res.status(201).json(newFormat);
