@@ -1,36 +1,49 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Mazal Importaciones Web
 
-## Getting Started
+Static/Client-Side website for **Mazal Importaciones**, a wholesale importer of hardware accessories (chains, hooks, fittings, etc.) based in Argentina.
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## 📝 Overview
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- **Company Presentation**
+- **Product Catalog** organized by categories
+- **Product Details** with packaging formats, measurements, and codes
+- **Contact Information** page
+- **Image carousel** and **Featured Products** section
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+This staging version is built with:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- **Next.js** (SSG + CSR)
+- **TypeScript**
+- **Tailwind CSS**
+- **Prisma** + PostgreSQL (Neon)
+- **API Routes** for CRUD operations on products, formats, and categories
+- **Vercel** for hosting and deployment
 
-## Learn More
+**Live Demo:** [https://mazal-web.vercel.app](https://mazal-web.vercel.app)
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🛠️ Tech Stack
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+| Technology        | Purpose                                   |
+| ----------------- | ----------------------------------------- |
+| Next.js           | React framework with SSG/CSR capabilities |
+| TypeScript        | Static typing                             |
+| Tailwind CSS      | Utility-first CSS framework               |
+| Prisma            | ORM for PostgreSQL                        |
+| PostgreSQL (Neon) | Hosted relational database                |
+| Axios             | HTTP client for client-side API calls     |
+| Vercel            | Deployment and hosting platform           |
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 🚀 Getting Started
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1. **Clone the repository**
+
+   ```bash
+   git clone https://github.com/<your-username>/mazal-web.git
+   cd mazal-web
+   ```

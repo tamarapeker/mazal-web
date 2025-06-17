@@ -94,14 +94,12 @@ export default function ProductsSub() {
   useEffect(() => {
     if (!isReady || !slug) return;
 
-    // 1) Traer la categoría
     api
       .get<Category & { children: Category[] }>(`/api/categories/${slug}`)
       .then((r) => {
         const cat = r.data;
         setCategory(cat);
 
-        // 2) Traer productos **usando cat.id**
         return api.get<Product[]>(`/api/products?categoryId=${cat.id}`);
       })
       .then((r2) => setProducts(r2.data))
