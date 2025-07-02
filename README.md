@@ -76,13 +76,17 @@ This staging version is built with:
    ```
 
 6. **Build for production**
+
    ```bash
    npm run build
    npm start
    ```
 
+   ***
+
 ## 🔧 Project Structure
 
+```text
 /mazal-web
 ├─ /pages # Next.js Pages Router
 ├─ /components # React components (Header, Footer, Carousel…)
@@ -94,6 +98,8 @@ This staging version is built with:
 ├─ package.json # Scripts & dependencies
 └─ tsconfig.json # TypeScript configuration
 
+---
+
 ## 📦 API Endpoints
 
 GET /api/categories → List all categories
@@ -103,3 +109,4 @@ GET /api/categories/[slug] → Get category with products
 GET /api/products → List products (?categoryId=ID&take=N)
 
 GET /api/products/[id] → Get product details with formats & images
+```
