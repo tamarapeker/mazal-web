@@ -88,15 +88,16 @@ This staging version is built with:
 
 ```text
 /mazal-web
-├─ /pages # Next.js Pages Router
-├─ /components # React components (Header, Footer, Carousel…)
-├─ /lib # Helpers (Prisma client, API wrapper)
-├─ /prisma # Prisma schema & migrations
-├─ /public/images # Static images & assets
-├─ /styles # Global Tailwind CSS files
-├─ README.md # This file
-├─ package.json # Scripts & dependencies
-└─ tsconfig.json # TypeScript configuration
+├─ pages/              # Next.js Pages Router
+├─ components/         # React components
+├─ lib/                # Prisma client & API wrapper
+├─ prisma/             # Schema & migrations
+├─ public/images/      # Static assets
+├─ styles/             # Tailwind CSS entrypoint
+├─ .env.example
+├─ README.md
+├─ package.json
+└─ tsconfig.json
 ```
 
 ---
@@ -105,11 +106,11 @@ This staging version is built with:
 
 GET /api/categories → List all categories
 
-GET /api/categories/[slug] → Get category with products
-
-GET /api/products → List products (?categoryId=ID&take=N)
+GET /api/products → List products (?categoryId=ID & take=N)
 
 GET /api/products/[id] → Get product details with formats & images
+
+GET /api/formats?productId=ID → Get product formats
 
 ```
 
