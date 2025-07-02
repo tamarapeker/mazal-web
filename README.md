@@ -47,3 +47,59 @@ This staging version is built with:
    git clone https://github.com/<your-username>/mazal-web.git
    cd mazal-web
    ```
+
+2. **Install Dependencies**
+
+   ```bash
+   npm install
+   ```
+
+3. **Environmental Variables**
+   Copy .env.example to .env and set:
+
+   ```env
+      DATABASE_URL="postgres://USER:PASS@HOST:PORT/DATABASE"
+      NEXT_PUBLIC_API_URL="http://localhost:3000"
+   ```
+
+4. **Run migrations & generate Prisma client**
+
+   ```bash
+   npx prisma migrate dev
+   npx prisma generate
+   ```
+
+5. **Start development server**
+
+   ```bash
+   npm run dev
+   ```
+
+6. **Build for production**
+   ```bash
+   npm run build
+   npm start
+   ```
+
+## 🔧 Project Structure
+
+/mazal-web
+├─ /pages # Next.js Pages Router
+├─ /components # React components (Header, Footer, Carousel…)
+├─ /lib # Helpers (Prisma client, API wrapper)
+├─ /prisma # Prisma schema & migrations
+├─ /public/images # Static images & assets
+├─ /styles # Global Tailwind CSS files
+├─ README.md # This file
+├─ package.json # Scripts & dependencies
+└─ tsconfig.json # TypeScript configuration
+
+## 📦 API Endpoints
+
+GET /api/categories → List all categories
+
+GET /api/categories/[slug] → Get category with products
+
+GET /api/products → List products (?categoryId=ID&take=N)
+
+GET /api/products/[id] → Get product details with formats & images
