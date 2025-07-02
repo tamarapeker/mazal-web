@@ -97,6 +97,7 @@ This staging version is built with:
 ├─ README.md # This file
 ├─ package.json # Scripts & dependencies
 └─ tsconfig.json # TypeScript configuration
+```
 
 ---
 
@@ -109,4 +110,7 @@ GET /api/categories/[slug] → Get category with products
 GET /api/products → List products (?categoryId=ID&take=N)
 
 GET /api/products/[id] → Get product details with formats & images
+
+```
+
 ```
